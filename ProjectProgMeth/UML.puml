@@ -1,0 +1,323 @@
+@startuml
+class input.InputUtility {
++ {static} boolean isLeftDown
++ {static} boolean isLeftClickedLastTick
+# {static} ArrayList<KeyCode> keyPressed
++ {static} int counter
++ {static} boolean getKeyCodes(KeyCode)
++ {static} void setKeyCodes(KeyCode,boolean)
++ {static} void mouseLeftDown()
++ {static} void mouseLeftRelease()
++ {static} boolean isLeftClickTriggered()
++ {static} void updateInputState()
+}
+class logic.Field {
++ int getZ()
++ void draw(GraphicsContext)
++ boolean isVisible()
++ boolean isDestroyed()
+}
+abstract class entity.character.Enemy {
++ {static} ArrayList<Integer> yPoints
++ {static} Random randomY
++ {static} int randomIndex
++ {static} int randomItem
++ <<Create>> Enemy(String,int,int,int,int)
++ void forward()
++ void update()
++ void attack()
++ boolean isVisible()
++ boolean isDestroyed()
+}
+class pane.ChoosePlayer {
+- Button warriorButton
+- Button tankButton
+- Button fighterButton
+- ImageView warrior
+- ImageView warriorUnselected
+- ImageView tank
+- ImageView tankUnselected
+- ImageView fighter
+- ImageView fighterUnselected
+# Text characterName
++ <<Create>> ChoosePlayer()
++ void setLabel()
++ void newWarriorButton()
++ void newTankButton()
++ void newFighterButton()
++ void setTextWarrior()
++ void setTextTank()
++ void setTextFighter()
+}
+abstract class entity.character.Player {
+# double angle
+- int nowCount
++ <<Create>> Player(String,int,int,int,int)
++ void forward()
++ void update()
++ void attack()
++ void forwardBlock()
+}
+class entity.character.Tank {
++ <<Create>> Tank()
++ void draw(GraphicsContext)
++ boolean isDestroyed()
+}
+class entity.item.addHp {
++ <<Create>> addHp(Position)
++ void performItem(Player)
++ void draw(GraphicsContext)
++ boolean isVisible()
++ boolean isDestroyed()
+}
+abstract class entity.base.Character {
+- String name
+- int damage
+- int hp
+- int maxHp
+- int defense
+# Position currentPosition
+- Direction direction
+# int z
+# boolean visible
++ <<Create>> Character(String,int,int,int,int)
++ void attack(Character)
++ boolean isDead()
++ int getZ()
++ boolean isVisible()
++ void setHp(int)
++ void setMaxHp(int)
++ void setDamage(int)
++ void setDefense(int)
++ void setDirection(Direction)
++ int getHp()
++ int getMaxHp()
++ int getDefense()
++ int getDamage()
++ Position getCurrentPosition()
++ Direction getDirection()
++ {abstract}void forward()
++ {abstract}void attack()
+}
+class entity.block.Lava {
++ <<Create>> Lava(Position)
++ void performBlock(Player)
++ int getZ()
++ void draw(GraphicsContext)
++ void update()
++ boolean isVisible()
++ boolean isDestroyed()
+}
+class entity.block.WoodBlock {
+- int hp
+# int z
+# boolean visible
++ {static} ArrayList<ArrayList<Position>> woodBlockPos
++ <<Create>> WoodBlock(Position)
++ void generateItem()
++ void performBlock(Player)
++ int getZ()
++ void draw(GraphicsContext)
++ boolean isVisible()
++ boolean isDestroyed()
++ int getHp()
++ void setHp(int)
+}
+class entity.character.Droid {
++ <<Create>> Droid(int)
++ void draw(GraphicsContext)
+}
+class entity.character.Warrior {
++ <<Create>> Warrior()
++ void draw(GraphicsContext)
++ boolean isVisible()
++ boolean isDestroyed()
+}
+abstract class entity.base.Entity {
+- String name
+# Position currentPosition
++ <<Create>> Entity(String,Position)
++ {abstract}int getZ()
++ {abstract}void draw(GraphicsContext)
++ {abstract}boolean isVisible()
++ {abstract}boolean isDestroyed()
++ void setName(String)
++ void setCurrentPosition(Position)
++ Position getCurrentPosition()
+}
+abstract class entity.base.Block {
+- String name
++ <<Create>> Block(String,Position)
++ {abstract}void performBlock(Player)
+}
+class sharedObject.RenderableHolder {
+- {static} RenderableHolder instance
+- ArrayList<IRenderable> entities
+- Comparator<IRenderable> comparator
++ {static} Image lava
++ {static} Image droid
++ {static} Image warrior
++ {static} Image tank
++ {static} Image fighter
++ {static} Image addHp
++ {static} Image startButton
++ {static} Image backButton
++ {static} Image masterPSelected
++ {static} Image chooseCharacterBg
++ {static} AudioClip attacking_sound
++ {static} Font font
++ <<Create>> RenderableHolder()
++ {static} void loadResource()
++ void add(IRenderable)
++ void update()
++ {static} RenderableHolder getInstance()
++ ArrayList<IRenderable> getEntities()
+}
+interface sharedObject.IRenderable {
+~ int getZ()
+~ void draw(GraphicsContext)
+~ boolean isVisible()
+~ boolean isDestroyed()
+}
+class logic.GameLogic {
++ {static} ArrayList<Enemy> enemies
++ {static} ArrayList<Block> blocks
++ {static} ArrayList<WoodBlock> woodBlocks
++ {static} ArrayList<Lava> lavas
++ {static} ArrayList<Item> items
++ {static} Player player
++ {static} KingDroid kingDroid
++ {static} int curTime
++ {static} int level
++ {static} double speedDroid
++ {static} boolean kingWin
+- {static} boolean kingBorn
++ {static} int enemyCount
+# {static} int lastLevel
++ <<Create>> GameLogic()
++ {static} void addNewObject(Entity)
++ void logicUpdate()
++ {static} Thread logicUpdateThread()
++ {static} boolean isPlayerWin()
++ {static} boolean isPlayerLose()
++ {static} boolean gameEnd()
++ {static} void clearGame()
+}
+class drawing.GameScreen {
++ <<Create>> GameScreen(double,double)
++ void addKeycode()
++ void paint()
++ void paintBossBoom()
+}
+abstract class entity.base.Item {
+# Position currentPosition
+# boolean visible
+# int z
+# int initTime
++ <<Create>> Item(String,Position)
++ {abstract}void performItem(Player)
++ Position getCurrentoPosition()
++ void update()
++ int getZ()
++ boolean isVisible()
++ boolean isDestroyed()
+}
+class entity.item.addDefense {
++ <<Create>> addDefense(Position)
++ void performItem(Player)
++ void draw(GraphicsContext)
++ boolean isVisible()
++ boolean isDestroyed()
+}
+class entity.item.addDamage {
++ <<Create>> addDamage(Position)
++ void performItem(Player)
++ void draw(GraphicsContext)
++ boolean isVisible()
++ boolean isDestroyed()
+}
+class pane.Menu {
++ <<Create>> Menu()
+}
+class pane.Help {
++ <<Create>> Help()
+}
+class logic.Position {
+- double x
+- double y
++ <<Create>> Position(double,double)
++ double getX()
++ double getY()
++ void setX(double)
++ void setY(double)
+}
+class Main {
+- Stage primaryStage
+- Scene startScene
+- Scene helpScene
+- Scene chooseScene
+- Scene gameScene
++ void start(Stage)
++ void createStartScene()
++ void createChooseScene()
++ void createHelpScene()
++ void startGame()
++ void createPauseScene(AnimationTimer,StackPane)
++ void createEndScene(Pane)
++ Button createStartButton()
++ Button createHelpButton()
++ Button createExitButton()
++ Button createBackButton()
++ Button createPlayButton()
++ Button createBackToMenuButton()
++ Button createPlayAgainButton()
++ {static} void main(String[])
+}
+enum logic.Direction {
++  EAST
++  WEST
+}
+class entity.character.Fighter {
++ <<Create>> Fighter()
++ void draw(GraphicsContext)
++ boolean isDestroyed()
+}
+class drawing.StatusBar {
++ {static} void paint(GameScreen)
+}
+interface entity.base.Fightable {
+~ void attack()
+~ void forward()
+}
+class entity.character.KingDroid {
+- double speed
++ <<Create>> KingDroid(int)
++ void draw(GraphicsContext)
++ void update()
++ void forward()
+}
+
+
+sharedObject.IRenderable <|.. logic.Field
+entity.base.Character <|-- entity.character.Enemy
+pane.GridPane <|-- pane.ChoosePlayer
+entity.base.Character <|-- entity.character.Player
+entity.character.Player <|-- entity.character.Tank
+entity.base.Item <|-- entity.item.addHp
+entity.base.Entity <|-- entity.base.Character
+entity.base.Block <|-- entity.block.Lava
+entity.base.Block <|-- entity.block.WoodBlock
+entity.character.Enemy <|-- entity.character.Droid
+entity.character.Player <|-- entity.character.Warrior
+sharedObject.IRenderable <|.. entity.base.Entity
+entity.base.Entity <|-- entity.base.Block
+javafx.scene.canvas.Canvas <|-- drawing.GameScreen
+entity.base.Entity <|-- entity.base.Item
+entity.base.Item <|-- entity.item.addDefense
+entity.base.Item <|-- entity.item.addDamage
+pane.StackPane <|-- pane.Menu
+pane.StackPane <|-- pane.Help
+javafx.application.Application <|-- Main
+entity.character.Player <|-- entity.character.Fighter
+entity.character.Enemy <|-- entity.character.KingDroid
+@enduml
